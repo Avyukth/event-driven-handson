@@ -1,0 +1,27 @@
+FROM golang:1.21  as build_store_app
+ENV CGO_ENABLED 0
+ARG BUILD_REF
+
+
+COPY . /service
+
+# build the service binary
+WORKDIR /service/app/services/sales-api
+RUN go build -ldflags "-X main.build=${BUILD_REF}"
+
+#  Run the build  in minimum distro version
+FROM gcr.io/distroless/static-debian11
+ARG BUILD_DATE
+ARG BUILD_REF
+
+# COPY --from=build_store_app /service/app/services/store-app /service
+WORKDIR  /service
+
+CMD [ "./store-app" ]
+
+LABEL org.opencontainers.image.created="${BUILD_DATE}" \
+    org.opencontainers.image.title="store-app" \
+    org.opencontainers.image.authors="Subhrajit Makur <makur.subhrajit@gmail.com>" \
+    org.opencontainers.image.source="https://github.com/avyukth/event-driven-handson" \
+    org.opencontainers.image.revision="${BUILD_REF}" \
+    org.opencontainers.image.vendor="Subhrajit"
