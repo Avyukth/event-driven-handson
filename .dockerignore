@@ -1,0 +1,10 @@
+/.trunk
+.trunk/
+.git/
+.dockerignore
+.gitignore
+deploy/docker/
+deploy/k8s/
+LICENSE
+Makefile
+README.md
